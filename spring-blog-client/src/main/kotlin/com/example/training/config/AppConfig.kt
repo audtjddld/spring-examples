@@ -1,6 +1,5 @@
 package com.example.training.config
 
-import com.example.training.grpc.blog.BlogServiceGrpcKt
 import com.example.training.grpc.blog.BlogServiceGrpcKt.BlogServiceCoroutineStub
 import io.grpc.ManagedChannelBuilder
 import org.springframework.context.annotation.Bean
@@ -18,17 +17,6 @@ class AppConfig {
 
         return BlogServiceCoroutineStub(channel)
     }
-
-    @Bean
-    fun blockingStub() {
-        val channel = ManagedChannelBuilder.forAddress("localhost", 6565)
-            .usePlaintext()
-            .build()
-
-        
-//        return BlogServiceCoroutineStub(channel)
-    }
-
 
     @Bean
     fun protobufHttpMessageConverter(): ProtobufHttpMessageConverter {

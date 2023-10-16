@@ -5,13 +5,15 @@ import com.example.training.repository.BlogRepository
 import com.example.training.service.BlogService
 import io.grpc.Server
 import io.grpc.ServerBuilder
+import org.springframework.beans.factory.DisposableBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter
 
 
 @Configuration
-class AppConfig {
+class AppConfig : DisposableBean {
+    private lateinit var server: Server
 
     @Bean
     fun blogRepository(): BlogRepository {
@@ -42,6 +44,13 @@ class AppConfig {
             .build()
         server.start()
         println("gRPC server started : $server")
+        this.server = server
         return server
+    }
+
+
+    override fun destroy() {
+        println("calling close() ${server}")
+        server.awaitTermination()
     }
 }
