@@ -28,6 +28,7 @@ repositories {
 val protobufVersion = "3.24.4"
 val grpcVersion = "1.58.0"
 val grpcKotlinVersion = "1.4.0"
+val kotlinLoggingVersion = "2.0.11"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -54,6 +55,7 @@ dependencies {
     implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 
     if (JavaVersion.current().isJava9Compatible) {
         // Workaround for @javax.annotation.Generated

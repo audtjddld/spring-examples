@@ -1,6 +1,7 @@
 package com.example.training.config
 
 import com.example.training.grpc.blog.BlogPost
+import com.example.training.log
 import com.example.training.repository.BlogRepository
 import com.example.training.service.BlogService
 import io.grpc.Server
@@ -43,14 +44,20 @@ class AppConfig : DisposableBean {
             .addService(BlogService(blogRepository))
             .build()
         server.start()
-        println("gRPC server started : $server")
+
+        log.info {
+            "gRPC server started : $server"
+        }
+
         this.server = server
         return server
     }
 
 
     override fun destroy() {
-        println("calling close() ${server}")
+        log.info {
+            "calling close() ${server}"
+        }
         server.awaitTermination()
     }
 }

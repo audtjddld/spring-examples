@@ -20,7 +20,10 @@ class BlogController(
         val request = GetBlogPostRequest.newBuilder()
             .setId(blogId)
             .build()
-        println("sending request: $request")
+
+        log.info {
+            "sending request: $request"
+        }
 
         return runBlocking { stub.getBlogPost(request) }
     }

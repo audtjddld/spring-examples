@@ -3,6 +3,7 @@ package com.example.training.service
 import com.example.training.grpc.blog.BlogPost
 import com.example.training.grpc.blog.BlogServiceGrpcKt
 import com.example.training.grpc.blog.GetBlogPostRequest
+import com.example.training.log
 import com.example.training.repository.BlogRepository
 import org.springframework.stereotype.Service
 
@@ -12,7 +13,9 @@ class BlogService(
 ) : BlogServiceGrpcKt.BlogServiceCoroutineImplBase() {
 
     override suspend fun getBlogPost(request: GetBlogPostRequest): BlogPost {
-        println("received request: $request")
+        log.info {
+            "received request: $request"
+        }
         return blogRepository.findById(request.id)!!
     }
 }
