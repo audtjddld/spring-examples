@@ -1,54 +1,22 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    id("org.springframework.boot") version "3.1.4"
-    id("io.spring.dependency-management") version "1.1.3"
-    kotlin("jvm") version "1.8.22"
-    kotlin("plugin.spring") version "1.8.22"
-    id("com.google.protobuf") version "0.9.4"
+    alias(libs.plugins.gradle.git.properties)
+    alias(libs.plugins.springboot)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.protobuf)
 }
-
-group = "com.example"
-version = "0.0.1-SNAPSHOT"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-}
-
-configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-val protobufVersion = "3.24.4"
-val grpcVersion = "1.58.0"
-val grpcKotlinVersion = "1.4.0"
-val coroutinesVersion = "1.7.3"
-val kotlinLoggingVersion = "2.0.11"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation(project(mapOf("path" to ":spring-blog-client")))
+    implementation(libs.spring.boot.actuator)
+    implementation(libs.spring.boot.web)
+    implementation(libs.jackson.module.kotlin)
+    implementation(libs.kotlin.reflect)
+    annotationProcessor(libs.spring.boot.annotation.configrator.processor)
+    testImplementation(libs.spring.boot.test)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlin.logging.jvm)
+    implementation(project(":grpc"))
     protobuf(project(":grpc"))
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation("com.google.protobuf:protobuf-java-util:$protobufVersion")
-    implementation("com.google.protobuf:protobuf-kotlin:$protobufVersion")
-    implementation("io.grpc:grpc-stub:$grpcVersion")
-    implementation("io.grpc:grpc-protobuf:$grpcVersion")
-    implementation("io.grpc:grpc-netty-shaded:$grpcVersion")
-    implementation("io.grpc:grpc-kotlin-stub:$grpcKotlinVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
 
     if (JavaVersion.current().isJava9Compatible) {
         // Workaround for @javax.annotation.Generated
@@ -57,28 +25,16 @@ dependencies {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += "-Xjsr305=strict"
-        jvmTarget = "17"
-    }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
     }
     plugins {
         create("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java:$grpcVersion"
+            artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
         }
         create("grpckt") {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpcKotlinVersion:jdk8@jar"
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${libs.versions.grpcKotlin.get()}:jdk8@jar"
         }
     }
     generateProtoTasks {
@@ -92,4 +48,13 @@ protobuf {
             }
         }
     }
+}
+
+springBoot {
+    buildInfo()
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mm:ssZz"
+    dateFormatTimeZone = "Asia/Seoul"
 }
