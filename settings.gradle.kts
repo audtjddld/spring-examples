@@ -3,6 +3,8 @@ rootProject.name = "spring-examples"
 includeProject(
     ":spring-blog-server" to "spring-blog-server",
     ":spring-blog-client" to "spring-blog-client",
+    ":spring-boot-with-armeria-and-tomcat-client" to "spring-boot-with-armeria-and-tomcat-client",
+    ":spring-boot-with-armeria-and-tomcat-server" to "spring-boot-with-armeria-and-tomcat-server",
     ":grpc" to "grpc"
 )
 
